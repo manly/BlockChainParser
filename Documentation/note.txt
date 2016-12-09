@@ -21,3 +21,9 @@ tx.locktime
 If all TxIn inputs have final (0xffffffff) sequence numbers then lock_time is irrelevant. Otherwise, the transaction may not be added to a block until after lock_time (see NLockTime).
 
 (the code currently checks for this and has the property LockTime.ContainsHiddenData)
+
+
+
+
+more blocks:
+https://mega.nz/#!Y0g3TZxZ!Dgx9bew6hx7gT2s1vE1SRFBjWETOh6HjccC9YL4DH5s
