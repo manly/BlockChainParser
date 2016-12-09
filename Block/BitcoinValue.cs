@@ -18,17 +18,17 @@ namespace BlockChain
             m_btc = btc;
         }
 
-        public decimal Btc => m_btc;
+        public decimal Btc       => m_btc;
         public decimal MilliBits => m_btc * BitcoinValue.MilliBitsPerBitcoin;
-        public decimal Bits => m_btc * BitcoinValue.BitsPerBitcoin;
-        public long Satoshis => (long)(m_btc * BitcoinValue.SatoshisPerBitcoin);
+        public decimal Bits      => m_btc * BitcoinValue.BitsPerBitcoin;
+        public long Satoshis     => (long)(m_btc * BitcoinValue.SatoshisPerBitcoin);
 
         
 
         public static BitcoinValue FromSatoshis(long satoshis) => new BitcoinValue((decimal)satoshis / BitcoinValue.SatoshisPerBitcoin);
-        public static BitcoinValue FromBits(decimal bits) => new BitcoinValue(bits / BitcoinValue.BitsPerBitcoin);
+        public static BitcoinValue FromBits(decimal bits)      => new BitcoinValue(bits / BitcoinValue.BitsPerBitcoin);
         public static BitcoinValue FromMilliBits(decimal mBtc) => new BitcoinValue(mBtc / BitcoinValue.MilliBitsPerBitcoin);
-        public static BitcoinValue FromBtc(decimal btc) => new BitcoinValue(btc);
+        public static BitcoinValue FromBtc(decimal btc)        => new BitcoinValue(btc);
 
 
         public static BitcoinValue operator +(BitcoinValue x, BitcoinValue y) {
