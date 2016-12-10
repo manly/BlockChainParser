@@ -1,0 +1,7 @@
+﻿This folder contains a compiled version of
+
+https://github.com/MetacoSA/NBitcoin/archive/master.zip
+
+This is only used for the blockchain script parser to convert into string.
+
+For some reason the nuget packages were not working so here are the compiled DLLs.

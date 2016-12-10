@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NBitcoin">
+      <HintPath>NBitCoin\NBitcoin\bin\Debug\NBitcoin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,23 +46,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Block\ByteArrayContainerBase.cs" />
-    <Compile Include="Block\LockTime.cs" />
-    <Compile Include="Block\BitcoinValue.cs" />
-    <Compile Include="Block\Extensions.cs" />
-    <Compile Include="Block\Hash.cs" />
-    <Compile Include="Block\Block.cs" />
-    <Compile Include="Block\OutPoint.cs" />
-    <Compile Include="Block\SignatureScript.cs" />
-    <Compile Include="Block\PublicKeyScript.cs" />
-    <Compile Include="Block\TransactionOut.cs" />
-    <Compile Include="Block\TransactionIn.cs" />
-    <Compile Include="Block\Transaction.cs" />
+    <Compile Include="Parsing\ByteArrayContainerBase.cs" />
+    <Compile Include="Parsing\LockTime.cs" />
+    <Compile Include="Parsing\BitcoinValue.cs" />
+    <Compile Include="Parsing\Extensions.cs" />
+    <Compile Include="Parsing\Hash.cs" />
+    <Compile Include="Parsing\Block.cs" />
+    <Compile Include="Parsing\OutPoint.cs" />
+    <Compile Include="Parsing\SignatureScript.cs" />
+    <Compile Include="Parsing\PublicKeyScript.cs" />
+    <Compile Include="Parsing\TransactionOut.cs" />
+    <Compile Include="Parsing\TransactionIn.cs" />
+    <Compile Include="Parsing\Transaction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +74,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documentation\note.txt" />
+    <Content Include="NBitCoin\NBitcoin.dll" />
+    <Content Include="NBitCoin\NBitcoin.pdb" />
+    <Content Include="NBitCoin\Newtonsoft.Json.dll" />
+    <Content Include="NBitCoin\Newtonsoft.Json.xml" />
+    <None Include="NBitCoin\note.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
