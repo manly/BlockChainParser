@@ -17,12 +17,10 @@ namespace BlockChain
         }
 
         public static OutPoint Parse(BinaryReader reader) {
-            var res = new OutPoint();
-
-            res.Hash = Hash.Parse(reader, 32);
-            res.Index = reader.ReadUInt32();
-            
-            return res;
+            return new OutPoint() {
+                Hash = Hash.Parse(reader, 32),
+                Index = reader.ReadUInt32(),
+            };
         }
     }
 

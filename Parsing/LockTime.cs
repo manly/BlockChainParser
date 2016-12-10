@@ -62,11 +62,10 @@ namespace BlockChain
 
 
         public static LockTime Parse(BinaryReader reader, bool is_lock_time_irrelevant) {
-            var res = new LockTime() {
+            return new LockTime() {
                 m_raw = reader.ReadUInt32(),
                 IsIrrelevant = is_lock_time_irrelevant,
             };
-            return res;
         }
     }
 

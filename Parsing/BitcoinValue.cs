@@ -54,7 +54,6 @@ namespace BlockChain
         public override string ToString() {
             return string.Format(CultureInfo.InvariantCulture, "{{{0} btc}}", this.Btc);
         }
-
         public int CompareTo(object obj) {
             return this.CompareTo((BitcoinValue)obj);
         }

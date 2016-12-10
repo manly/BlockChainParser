@@ -60,9 +60,11 @@
     <Compile Include="Parsing\Transaction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptParsing\DataChunkExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="filetype_detectors\triddefs.trd" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
@@ -74,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documentation\note.txt" />
+    <None Include="filetype_detectors\jhove-latest.jar" />
+    <None Include="filetype_detectors\trid.exe" />
     <Content Include="NBitCoin\NBitcoin.dll" />
     <Content Include="NBitCoin\NBitcoin.pdb" />
     <Content Include="NBitCoin\Newtonsoft.Json.dll" />
