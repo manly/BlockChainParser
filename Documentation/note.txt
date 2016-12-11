@@ -27,3 +27,12 @@ If all TxIn inputs have final (0xffffffff) sequence numbers then lock_time is ir
 
 more blocks:
 https://mega.nz/#!Y0g3TZxZ!Dgx9bew6hx7gT2s1vE1SRFBjWETOh6HjccC9YL4DH5s
+
+
+
+http://enetium.com/resources/Bitcoin.pdf
+
+http://www.righto.com/2014/02/ascii-bernanke-wikileaks-photographs.html
+
+
+https://blockchain.info/rawblock/{block height}

@@ -19,6 +19,10 @@ namespace BlockChain
             }
         }
 
+        public uint GetRaw() {
+            return m_raw;
+        }
+
         public bool IsLocked {
             get {
                 return m_raw != 0;
@@ -43,7 +47,7 @@ namespace BlockChain
         public DateTime UnlocksAt {
             get {
                 if(m_raw >= 500000000)
-                    return Extensions.ReadUnixTimestamp(m_raw);
+                    return Helper.ReadUnixTimestamp(m_raw);
                 return DateTime.MinValue;
             }
         }

@@ -9,7 +9,9 @@ namespace BlockChain
 {
 
     public class SignatureScript : ByteArrayContainerBase {
-        private SignatureScript(BinaryReader reader, int size) : base(reader, size, false) { }
+        private const bool IS_LITTLE_ENDIAN = false;
+
+        private SignatureScript(BinaryReader reader, int size) : base(reader, size, IS_LITTLE_ENDIAN) { }
 
         public static SignatureScript Parse(BinaryReader reader, int size) {
             return new SignatureScript(reader, size);

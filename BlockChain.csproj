@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
     <Compile Include="Parsing\ByteArrayContainerBase.cs" />
     <Compile Include="Parsing\LockTime.cs" />
     <Compile Include="Parsing\BitcoinValue.cs" />
-    <Compile Include="Parsing\Extensions.cs" />
     <Compile Include="Parsing\Hash.cs" />
     <Compile Include="Parsing\Block.cs" />
     <Compile Include="Parsing\OutPoint.cs" />

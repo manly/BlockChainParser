@@ -22,9 +22,11 @@ namespace BlockChain {
 
         private static void ParseFile(string file, ref int block_id) {
             var sb = new StringBuilder();
+            var sb_transactions = new StringBuilder();
 
             try {
-                foreach(var block in Block.ParseAll(file)) {
+                foreach(var block in Block.ParseAll(file, block_id)) {
+                    block_id++;
                     int tx_id = 0;
                     // todo: do something here with the blocks
                     foreach(var transaction in block.Transactions) {
@@ -32,11 +34,12 @@ namespace BlockChain {
                             var text_script = txout.Script.ToString();
                             if(DataChunkExtractor.Filter(text_script))
                                 continue;
-                            sb.AppendFormat("block {0}", block_id);
-                            sb.AppendLine();
-                            sb.AppendFormat("transaction {0}", tx_id);
+                            sb.AppendFormat("block {0} - transaction https://blockchain.info/tx/{1}", block.Height, transaction.TransactionHash);
                             sb.AppendLine();
                             sb.AppendLine(text_script);
+                            sb.AppendLine();
+                            
+                            sb_transactions.AppendLine(transaction.TransactionHash.ToString());
                         }
                         tx_id++;
                     }
@@ -46,7 +49,11 @@ namespace BlockChain {
                 throw new FormatException($"An error occured reading the file {file}. File might be corrupted or contain extra data.", ex);
             }
 
-            System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(file, "txt"), sb.ToString());
+            var newfile = System.IO.Path.ChangeExtension(file, "") + " - non-std scripts.txt";
+            System.IO.File.WriteAllText(newfile, sb.ToString());
+
+            newfile = System.IO.Path.ChangeExtension(file, "") + " - non-std scripts - transactions.txt";
+            System.IO.File.WriteAllText(newfile, sb_transactions.ToString());
         }
 
         private static string GetBlocksFolder() {

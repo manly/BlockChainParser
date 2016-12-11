@@ -9,7 +9,9 @@ namespace BlockChain
 {
 
     public class PublicKeyScript : ByteArrayContainerBase {
-        private PublicKeyScript(BinaryReader reader, int size) : base(reader, size, false) { }
+        private const bool IS_LITTLE_ENDIAN = false;
+
+        private PublicKeyScript(BinaryReader reader, int size) : base(reader, size, IS_LITTLE_ENDIAN) { }
 
         public override string ToString() {
             return NBitcoin.Script.FromBytesUnsafe(this.Raw).ToString();
