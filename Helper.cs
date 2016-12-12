@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Globalization;
 using System.Linq;
@@ -18,23 +19,27 @@ namespace BlockChain
                 m_hexValues[i] = i.ToString("x2", CultureInfo.InvariantCulture);
         }
 
-        public static Hash SHA256(byte[] value, int offset, int count) {
+        public static Hash SHA256(byte[] buffer, int offset, int count) {
             var sha256 = SHA256Managed.Create();
-            var hash = sha256.ComputeHash(value, offset, count);
+            var hash = sha256.ComputeHash(buffer, offset, count);
             return new Hash(hash);
         }
         /// <summary>
         ///     SHA256 ran twice.
         /// </summary>
-        public static Hash SHA256_2(byte[] value, int offset, int count) {
+        public static Hash SHA256_2(byte[] buffer, int offset, int count) {
             var sha256 = SHA256Managed.Create();
-            var hash = sha256.ComputeHash(value, offset, count);
+            var hash = sha256.ComputeHash(buffer, offset, count);
             hash = sha256.ComputeHash(hash);
             return new Hash(hash);
         }
 
-        public static DateTime ReadUnixTimestamp(this BinaryReader reader) {
-            return ReadUnixTimestamp(reader.ReadUInt32());
+        public static DateTime ReadUnixTimestamp(byte[] buffer, ref int index) {
+            return ReadUnixTimestamp(
+                ((uint)buffer[index++] << 0)  |
+                ((uint)buffer[index++] << 8)  |
+                ((uint)buffer[index++] << 16) |
+                ((uint)buffer[index++] << 24));
         }
 
         public static DateTime ReadUnixTimestamp(uint value) {
@@ -46,12 +51,29 @@ namespace BlockChain
             return (uint)(value - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
-        public static ulong ReadVariableUInt(this BinaryReader reader) {
-            byte first = reader.ReadByte();
-            if(first < 0xFD)  return first;
-            if(first == 0xFD) return reader.ReadUInt16();
-            if(first == 0xFE) return reader.ReadUInt32();
-            return reader.ReadUInt64();
+        public static ulong ReadVariableUInt(byte[] buffer, ref int index) {
+            byte first = buffer[index++];
+            if(first < 0xFD)
+                return first;
+            if(first == 0xFD)
+                return 
+                    ((uint)buffer[index++] << 0) |
+                    ((uint)buffer[index++] << 8);
+            if(first == 0xFE)
+                return
+                    ((uint)buffer[index++] << 0)  |
+                    ((uint)buffer[index++] << 8)  |
+                    ((uint)buffer[index++] << 16) |
+                    ((uint)buffer[index++] << 24);
+            return
+                ((ulong)buffer[index++] << 0)  |
+                ((ulong)buffer[index++] << 8)  |
+                ((ulong)buffer[index++] << 16) |
+                ((ulong)buffer[index++] << 24) |
+                ((ulong)buffer[index++] << 32) |
+                ((ulong)buffer[index++] << 40) |
+                ((ulong)buffer[index++] << 48) |
+                ((ulong)buffer[index++] << 56);
         }
         public static void WriteVariableUInt(ulong value, byte[] buffer, ref int index) {
             if(value < 0xFD)
@@ -87,5 +109,9 @@ namespace BlockChain
             return sb.ToString();
         }
 
+        private static Regex m_scriptPattern = new Regex(@"\b[0-9a-fA-F]+\b", RegexOptions.Compiled);
+        public static string DetectScriptPattern(string script) {
+            return m_scriptPattern.Replace(script, m => $"[hex size={m.Length.ToString(CultureInfo.InvariantCulture)}]").Trim();
+        }
     }
 }

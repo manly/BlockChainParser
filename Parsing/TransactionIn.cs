@@ -16,16 +16,21 @@ namespace BlockChain {
             return string.Format("{{tx_in: {0}}}", this.Sequence == 0xFFFFFFFF ? "0xffffffff" : this.Sequence.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static TransactionIn Parse(BinaryReader reader) {
+        public static TransactionIn Parse(byte[] buffer, ref int index) {
             var res = new TransactionIn();
 
-            res.PreviousOutput = OutPoint.Parse(reader);
+            res.PreviousOutput = OutPoint.Parse(buffer, ref index);
 
-            var script_length = reader.ReadVariableUInt();
-            res.Script = SignatureScript.Parse(reader, (int)script_length);
+            var script_length = Helper.ReadVariableUInt(buffer, ref index);
+            res.Script = SignatureScript.Parse(buffer, ref index, (int)script_length);
 
             // see http://bitcoin.stackexchange.com/questions/2025/what-is-txins-sequence
-            res.Sequence = reader.ReadUInt32(); // Transaction version as defined by the sender. Intended for "replacement" of transactions when information is updated before inclusion into a block.
+            // Transaction version as defined by the sender. Intended for "replacement" of transactions when information is updated before inclusion into a block.
+            res.Sequence = 
+                ((uint)buffer[index++] << 0)  |
+                ((uint)buffer[index++] << 8)  |
+                ((uint)buffer[index++] << 16) |
+                ((uint)buffer[index++] << 24);
             return res;
         }
     }

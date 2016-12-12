@@ -30,6 +30,18 @@ namespace BlockChain
         public static BitcoinValue FromMilliBits(decimal mBtc) => new BitcoinValue(mBtc / BitcoinValue.MilliBitsPerBitcoin);
         public static BitcoinValue FromBtc(decimal btc)        => new BitcoinValue(btc);
 
+        public static BitcoinValue Read(byte[] buffer, ref int index) {
+            return FromSatoshis(
+                ((long)buffer[index++] << 0)  |
+                ((long)buffer[index++] << 8)  |
+                ((long)buffer[index++] << 16) |
+                ((long)buffer[index++] << 24) |
+                ((long)buffer[index++] << 32) |
+                ((long)buffer[index++] << 40) |
+                ((long)buffer[index++] << 48) |
+                ((long)buffer[index++] << 56));
+        }
+
 
         public static BitcoinValue operator +(BitcoinValue x, BitcoinValue y) {
             return new BitcoinValue(x.Btc + y.Btc);
@@ -46,19 +58,18 @@ namespace BlockChain
                 return this.Equals((BitcoinValue)obj);
             return false;
         }
-
         public override int GetHashCode() {
             return m_btc.GetHashCode();
-        }
-
-        public override string ToString() {
-            return string.Format(CultureInfo.InvariantCulture, "{{{0} btc}}", this.Btc);
         }
         public int CompareTo(object obj) {
             return this.CompareTo((BitcoinValue)obj);
         }
         public int CompareTo(BitcoinValue other) {
             return this.m_btc.CompareTo(other.m_btc);
+        }
+
+        public override string ToString() {
+            return string.Format(CultureInfo.InvariantCulture, "{{{0} btc}}", this.Btc);
         }
     }
 

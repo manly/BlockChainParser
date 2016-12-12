@@ -72,7 +72,6 @@
     <None Include="blocks\test.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Documentation\blockchain.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Documentation\note.txt" />

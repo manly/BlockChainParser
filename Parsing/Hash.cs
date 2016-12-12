@@ -11,12 +11,12 @@ namespace BlockChain
     public class Hash : ByteArrayContainerBase {
         private const bool IS_LITTLE_ENDIAN = true;
 
-        private Hash(BinaryReader reader, int bytes) : base(reader, bytes, IS_LITTLE_ENDIAN) { }
+        private Hash(byte[] buffer, ref int index, int bytes) : base(buffer, ref index, bytes, IS_LITTLE_ENDIAN) { }
         public Hash(byte[] hash) : base(hash, IS_LITTLE_ENDIAN) { }
 
 
-        public static Hash Parse(BinaryReader reader, int bytes) {
-            return new Hash(reader, bytes);
+        public static Hash Parse(byte[] buffer, ref int index, int bytes) {
+            return new Hash(buffer, ref index, bytes);
         }
     }
 

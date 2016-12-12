@@ -11,14 +11,14 @@ namespace BlockChain
     public class PublicKeyScript : ByteArrayContainerBase {
         private const bool IS_LITTLE_ENDIAN = false;
 
-        private PublicKeyScript(BinaryReader reader, int size) : base(reader, size, IS_LITTLE_ENDIAN) { }
+        private PublicKeyScript(byte[] buffer, ref int index, int bytes) : base(buffer, ref index, bytes, IS_LITTLE_ENDIAN) { }
 
         public override string ToString() {
             return NBitcoin.Script.FromBytesUnsafe(this.Raw).ToString();
         }
 
-        public static PublicKeyScript Parse(BinaryReader reader, int size) {
-            return new PublicKeyScript(reader, size);
+        public static PublicKeyScript Parse(byte[] buffer, ref int index, int size) {
+            return new PublicKeyScript(buffer, ref index, size);
         }
     }
 

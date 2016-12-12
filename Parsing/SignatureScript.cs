@@ -11,10 +11,10 @@ namespace BlockChain
     public class SignatureScript : ByteArrayContainerBase {
         private const bool IS_LITTLE_ENDIAN = false;
 
-        private SignatureScript(BinaryReader reader, int size) : base(reader, size, IS_LITTLE_ENDIAN) { }
+        private SignatureScript(byte[] buffer, ref int index, int size) : base(buffer, ref index, size, IS_LITTLE_ENDIAN) { }
 
-        public static SignatureScript Parse(BinaryReader reader, int size) {
-            return new SignatureScript(reader, size);
+        public static SignatureScript Parse(byte[] buffer, ref int index, int size) {
+            return new SignatureScript(buffer, ref index, size);
         }
     }
 

@@ -16,13 +16,13 @@ namespace BlockChain
             return string.Format("{{tx_out: {0}}}", this.Value);
         }
 
-        public static TransactionOut Parse(BinaryReader reader) {
+        public static TransactionOut Parse(byte[] buffer, ref int index) {
             var res = new TransactionOut();
 
-            res.Value = BitcoinValue.FromSatoshis(reader.ReadInt64());
+            res.Value = BitcoinValue.Read(buffer, ref index);
 
-            var script_length = reader.ReadVariableUInt();
-            res.Script = PublicKeyScript.Parse(reader, (int)script_length);
+            var script_length = Helper.ReadVariableUInt(buffer, ref index);
+            res.Script = PublicKeyScript.Parse(buffer, ref index, (int)script_length);
             return res;
         }
     }

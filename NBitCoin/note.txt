@@ -5,3 +5,5 @@ https://github.com/MetacoSA/NBitcoin/archive/master.zip
 This is only used for the blockchain script parser to convert into string.
 
 For some reason the nuget packages were not working so here are the compiled DLLs.
+
+Feel free to recompile from the above link if you would rather have verifiable code. I really tried to make the nuget package work but my vs.net wouldnt have any of it.

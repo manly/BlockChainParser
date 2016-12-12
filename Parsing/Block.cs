@@ -8,7 +8,9 @@ using System.Text;
 namespace BlockChain
 {
     public class Block {
-        public int           Height; // index from 0
+        public Hash          BlockHash;
+
+        public int           Height = -1; // this is set afterward parsing because the .dat files ordering != Height ordering
         public int           ByteLength;
         public int           Version;
         public Hash          PrevBlockHash;
@@ -18,86 +20,91 @@ namespace BlockChain
         public uint          Nonce;
         public Transaction[] Transactions;
 
-        private Hash m_hash = null;
-        public Hash BlockHash {
-            get {
-                if(m_hash == null)
-                    m_hash = CalculateBlockHash();
-                return m_hash;
-            }
-        }
-
-        private Hash CalculateBlockHash() {
-            var raw = new byte[80];
-            
-            raw[0] = (byte)((this.Version >> 0)    & 0xFF);
-            raw[1] = (byte)((this.Version >> 8)    & 0xFF);
-            raw[2] = (byte)((this.Version >> 16)   & 0xFF);
-            raw[3] = (byte)((this.Version >> 24)   & 0xFF);
-            Buffer.BlockCopy(this.PrevBlockHash.GetOriginalRaw(), 0, raw, 4, 32);
-            Buffer.BlockCopy(this.MerkleRoot.GetOriginalRaw(), 0, raw, 36, 32);
-            var unixTimestamp = Helper.ToUnixTimestamp(this.Timestamp);
-            raw[68] = (byte)((unixTimestamp >> 0)  & 0xFF);
-            raw[69] = (byte)((unixTimestamp >> 8)  & 0xFF);
-            raw[70] = (byte)((unixTimestamp >> 16) & 0xFF);
-            raw[71] = (byte)((unixTimestamp >> 24) & 0xFF);
-            raw[72] = (byte)((this.Bits >> 0)      & 0xFF);
-            raw[73] = (byte)((this.Bits >> 8)      & 0xFF);
-            raw[74] = (byte)((this.Bits >> 16)     & 0xFF);
-            raw[75] = (byte)((this.Bits >> 24)     & 0xFF);
-            raw[76] = (byte)((this.Nonce >> 0)     & 0xFF);
-            raw[77] = (byte)((this.Nonce >> 8)     & 0xFF);
-            raw[78] = (byte)((this.Nonce >> 16)    & 0xFF);
-            raw[79] = (byte)((this.Nonce >> 24)    & 0xFF);
-
-            return Helper.SHA256_2(raw, 0, raw.Length);
-        }
+        
 
         public override string ToString() {
             var total_btc = BitcoinValue.FromSatoshis(this.Transactions
                 .SelectMany(o => o.Outs)
                 .Select(o => o.Value.Satoshis)
                 .Sum());
-            return string.Format(CultureInfo.InvariantCulture, "{{{0}  {1}: {2} tx ({3})}}", this.BlockHash, this.Timestamp, this.Transactions.Length, total_btc);
+            return string.Format(CultureInfo.InvariantCulture, "{{{0}: {1} tx ({2})}}", this.Timestamp, this.Transactions.Length, total_btc);
         }
 
-        public static Block Parse(Stream stream, int block_height = -1) {
+        public static Block Parse(Stream stream) {
             var res = new Block();
             var stream_start = stream.Position;
 
-            // important: BinaryReader reads in little-endian no matter the platform
-            using(var reader = new BinaryReader(stream, Encoding.UTF8, true)) { // keep open
-                // identifies the blockchain network (main/testnet/testnet3/namecoin)
-                var magic_signature = reader.ReadUInt32();
-                if(magic_signature != 0xD9B4BEF9)
-                    throw new InvalidOperationException("this code only works on the main blockchain network");
+            // read header and length
+            var header = new byte[8];
+            if(stream.Read(header, 0, 8) < 8)
+                throw new ApplicationException("The block isn't fully downloaded yet.");
 
-                res.Height = block_height;
-                res.ByteLength = (int)reader.ReadUInt32();
-                res.Version = reader.ReadInt32();
-                res.PrevBlockHash = Hash.Parse(reader, 32);
-                res.MerkleRoot = Hash.Parse(reader, 32);
-                res.Timestamp = reader.ReadUnixTimestamp();
-                res.Bits = reader.ReadUInt32(); // difficulty
-                res.Nonce = reader.ReadUInt32();
+            int index = 0;
+            var magic_signature = 
+                ((uint)header[index++] << 0)  |
+                ((uint)header[index++] << 8)  |
+                ((uint)header[index++] << 16) |
+                ((uint)header[index++] << 24);
 
-                var transactionCount = reader.ReadVariableUInt();
-                res.Transactions = new Transaction[transactionCount];
+            //NETWORK     MAGIC VALUE
+            //main        0xD9B4BEF9
+            //testnet     0xDAB5BFFA
+            //testnet3    0x0709110B
+            //namecoin    0xFEB4BEF9
+            if(magic_signature != 0xD9B4BEF9)
+                throw new InvalidOperationException("this code only works on the main blockchain network");
 
-                for(ulong i = 0; i < transactionCount; i++)
-                    res.Transactions[i] = Transaction.Parse(reader);
-            }
+            var block_length =
+                ((uint)header[index++] << 0)  |
+                ((uint)header[index++] << 8)  |
+                ((uint)header[index++] << 16) |
+                ((uint)header[index++] << 24);
+
+            if(block_length < 0 || block_length > 1000000)
+                throw new InvalidOperationException();
+
+            byte[] buffer = new byte[block_length];
+            if(stream.Read(buffer, 0, (int)block_length) < block_length)
+                throw new ApplicationException("The block isn't fully downloaded yet.");
+
+            index = 0;
+            res.BlockHash = Helper.SHA256_2(buffer, 0, 80);
+
+            res.Version =
+                ((int)buffer[index++] << 0)  |
+                ((int)buffer[index++] << 8)  |
+                ((int)buffer[index++] << 16) |
+                ((int)buffer[index++] << 24);
+            res.PrevBlockHash = Hash.Parse(buffer, ref index, 32);
+            res.MerkleRoot = Hash.Parse(buffer, ref index, 32);
+            res.Timestamp = Helper.ReadUnixTimestamp(buffer, ref index);
+            res.Bits = // difficulty
+                ((uint)buffer[index++] << 0)  |
+                ((uint)buffer[index++] << 8)  |
+                ((uint)buffer[index++] << 16) |
+                ((uint)buffer[index++] << 24);
+            res.Nonce =
+                ((uint)buffer[index++] << 0)  |
+                ((uint)buffer[index++] << 8)  |
+                ((uint)buffer[index++] << 16) |
+                ((uint)buffer[index++] << 24);
+
+            var transaction_count = Helper.ReadVariableUInt(buffer, ref index);
+            res.Transactions = new Transaction[transaction_count];
+
+            for(ulong i = 0; i < transaction_count; i++)
+                res.Transactions[i] = Transaction.Parse(buffer, ref index);
+
+            if(index != block_length)
+                throw new ApplicationException("parse error");
             
-            if(stream.Position != stream_start + res.ByteLength + 8)
-                throw new InvalidOperationException("parse error");
-
             return res;
         }
 
-        public static IEnumerable<Block> ParseAll(string path, int block_height = -1) {
+        public static IEnumerable<Block> ParseAll(string path) {
             using(var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                 while(stream.Position < stream.Length) {
-                    yield return Block.Parse(stream, block_height >= 0 ? block_height++ : -1);
+                    yield return Block.Parse(stream);
                 }
             }
         }
