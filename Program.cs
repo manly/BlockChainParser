@@ -12,14 +12,25 @@ namespace BlockChain {
         static void Main(string[] args) {
             var folder = GetBlocksFolder();
 
+            // point to your "bitcoin core" blocks folder
             var files = Directory.GetFiles(folder, "blk*.dat");
 
             // this code is intentionally not parallel to remain simple
             // it used to be, but the bottleneck is IO anyway and wasn't that much faster
-            LogScriptPatterns(files, @"e:\patterns.txt");
+            
             LogNonStdTransactions(files);
+            LogScriptPatterns(files, @"e:\patterns.txt");
+            IndexBlocksAndTransactions(files, @"e:\blocks_index.csv", @"e:\tx_index.csv");
         }
 
+        private static string GetBlocksFolder() {
+            var author_bitcoin_folder = @"c:\blocks";
+            if(Directory.Exists(author_bitcoin_folder))
+                return author_bitcoin_folder;
+
+            // change this to your "BitCoin Core" folder. ie: "%appdata%/Bitcoin/data" ?
+            return @".\blocks\";
+        }
 
         #region private static LogNonStdTransactions()
         /// <summary>
@@ -125,14 +136,36 @@ namespace BlockChain {
             }
         }
         #endregion
+        #region private static IndexBlocksAndTransactions()
+        /// <summary>
+        ///     Logs all non-standard transactions.
+        ///     This is useful for detecting which blockfiles/block are likely to contain hidden data.
+        /// </summary>
+        private static void IndexBlocksAndTransactions(string[] files, string output_block_index_file = @"e:\blocks_index.csv", string output_tx_index_file = @"e:\tx_index.csv") {
+            string current_file = null;
 
-        private static string GetBlocksFolder() {
-            var author_bitcoin_folder = @"E:\BitCoinCore BlockChain\blocks";
-            if(Directory.Exists(author_bitcoin_folder))
-                return author_bitcoin_folder;
+            try {
+                int block_height = 0;
+                foreach(var file in files) {
+                    current_file = file;
+                    foreach(var block in Block.ParseAll(file)) {
+                        block.Height = block_height++;
 
-            // change this to your "BitCoin Core" folder. ie: "%appdata%/Bitcoin/data" ?
-            return @".\blocks\";
+                        using(var block_index_stream = File.Open(output_block_index_file, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {
+                            using(var writer = new StreamWriter(block_index_stream, Encoding.UTF8))
+                                writer.WriteLine(string.Format("{0},{1},{2:yyyy-MM-dd HH:mm:ss}", block.BlockHash.ToString(), block.Height, block.Timestamp));
+                        }
+
+                        using(var tx_index_stream = File.Open(output_tx_index_file, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {
+                            using(var writer = new StreamWriter(tx_index_stream, Encoding.UTF8))
+                                writer.WriteLine(string.Join(Environment.NewLine, block.Transactions.Select(o => string.Format("{0},{1}", o.TransactionHash, block.Height))));
+                        }
+                    }
+                }
+            } catch(Exception ex) {
+                throw new FormatException($"An error occured reading the file {current_file}. File might be corrupted or contain extra data. This also occurs when reading block files from old version of bitcoin core.", ex);
+            }
         }
+        #endregion
     }
 }
