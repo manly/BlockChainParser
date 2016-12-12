@@ -18,9 +18,9 @@ namespace BlockChain {
             // this code is intentionally not parallel to remain simple
             // it used to be, but the bottleneck is IO anyway and wasn't that much faster
             
-            LogNonStdTransactions(files);
+            //LogNonStdTransactions(files);
             LogScriptPatterns(files, @"e:\patterns.txt");
-            IndexBlocksAndTransactions(files, @"e:\blocks_index.csv", @"e:\tx_index.csv");
+            //IndexBlocksAndTransactions(files, @"e:\blocks_index.csv", @"e:\tx_index.csv");
         }
 
         private static string GetBlocksFolder() {
@@ -29,7 +29,8 @@ namespace BlockChain {
                 return author_bitcoin_folder;
 
             // change this to your "BitCoin Core" folder. ie: "%appdata%/Bitcoin/data" ?
-            return @".\blocks\";
+            //return @".\blocks\";
+            return ".";
         }
 
         #region private static LogNonStdTransactions()
@@ -103,7 +104,7 @@ namespace BlockChain {
                                     temp = new ScriptPattern() {
                                         Pattern = pattern,
                                         Example = text_script,
-                                        TxId = txout.Script.ToString(),
+                                        TxId = transaction.TransactionHash.ToString(),
                                     };
                                     patterns.Add(pattern, temp);
                                 }
@@ -130,7 +131,7 @@ namespace BlockChain {
                 sb.AppendLine(this.Pattern);
                 sb.AppendFormat("example: {0}", this.Example);
                 sb.AppendLine();
-                sb.AppendFormat("transaction https://blockchain.info/tx/{0}", this.TxId);
+                sb.AppendFormat("transaction: https://blockchain.info/tx/{0}", this.TxId);
                 sb.AppendLine();
                 return sb.ToString();
             }
