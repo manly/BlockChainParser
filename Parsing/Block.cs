@@ -39,6 +39,30 @@ namespace BlockChain
             if(stream.Read(header, 0, 8) < 8)
                 throw new ApplicationException("The block isn't fully downloaded yet.");
 
+            // sometimes the blockfiles have zeros padded extra data that we skip
+            // this is mostly an issue with old bitcoin clients
+            if(header[0] == 0) {
+                var temp = new byte[4096];
+                stream.Position = stream_start;
+                int read;
+                while((read = stream.Read(temp, 0, 4096)) > 0){
+                    bool found_nonzero = false;
+                    for(int i = 0; i < read; i++) {
+                        if(temp[i] != 0) {
+                            found_nonzero = true;
+                            stream_start += i;
+                            stream.Position = stream_start;
+                            if(stream.Read(header, 0, 8) < 8)
+                                throw new ApplicationException("The block isn't fully downloaded yet.");
+                            break;
+                        }
+                    }
+                    if(found_nonzero)
+                        break;
+                    stream_start += read;
+                }
+            }
+
             int index = 0;
             var magic_signature = 
                 ((uint)header[index++] << 0)  |

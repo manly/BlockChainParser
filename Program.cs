@@ -29,8 +29,7 @@ namespace BlockChain {
                 return author_bitcoin_folder;
 
             // change this to your "BitCoin Core" folder. ie: "%appdata%/Bitcoin/data" ?
-            //return @".\blocks\";
-            return ".";
+            return @".\blocks\";
         }
 
         #region private static LogNonStdTransactions()
@@ -49,6 +48,8 @@ namespace BlockChain {
                     current_file = file;
                     foreach(var block in Block.ParseAll(file)) {
                         block.Height = block_height++;
+                        Console.WriteLine(string.Format("processing block #{0}", block.Height));
+
                         foreach(var transaction in block.Transactions) {
                             foreach(var txout in transaction.Outs) {
                                 var text_script = txout.Script.ToString();
@@ -94,6 +95,7 @@ namespace BlockChain {
                     current_file = file;
                     foreach(var block in Block.ParseAll(file)) {
                         block.Height = block_height++;
+                        Console.WriteLine(string.Format("processing block #{0}", block.Height));
                         foreach(var transaction in block.Transactions) {
                             foreach(var txout in transaction.Outs) {
                                 var text_script = txout.Script.ToString();
@@ -151,6 +153,7 @@ namespace BlockChain {
                     current_file = file;
                     foreach(var block in Block.ParseAll(file)) {
                         block.Height = block_height++;
+                        Console.WriteLine(string.Format("processing block #{0}", block.Height));
 
                         using(var block_index_stream = File.Open(output_block_index_file, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) {
                             using(var writer = new StreamWriter(block_index_stream, Encoding.UTF8))
