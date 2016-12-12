@@ -35,4 +35,19 @@ http://enetium.com/resources/Bitcoin.pdf
 http://www.righto.com/2014/02/ascii-bernanke-wikileaks-photographs.html
 
 
-https://blockchain.info/rawblock/{block height}
+https://blockchain.info/rawblock/1
+https://blockchain.info/rawblock/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+
+
+
+https://bitcoin.org/en/developer-guide#standard-transactions
+
+
+
+https://www.anintegratedworld.com/unravelling-the-mysterious-block-chain-magic-number/
+            //NETWORK     MAGIC VALUE
+            //main        0xD9B4BEF9
+            //testnet     0xDAB5BFFA
+            //testnet3    0x0709110B
+            //namecoin    0xFEB4BEF9
+there are 4 bitcoin blockchain to consider
