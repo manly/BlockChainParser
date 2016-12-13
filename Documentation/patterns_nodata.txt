@@ -1,0 +1,131 @@
+288607: OP_RETURN
+example: OP_RETURN
+transaction: https://blockchain.info/tx/eb31ca1a4cbd97c2770983164d7560d2d03276ae1aee26f12d7c2c6424252f29
+
+219174: 
+example: 
+transaction: https://blockchain.info/tx/7bd54def72825008b4ca0f4aeff13e6be2c5fe0f23430629a9d484a1ac2a29b8
+
+1: OP_CHECKMULTISIG OP_NOT
+example: OP_CHECKMULTISIG OP_NOT
+transaction: https://blockchain.info/tx/136becd0892fa38c5aca8104db8b90b3a0e6b40912b7d1462aed583c067054cd
+
+1: OP_CHECKMULTISIG
+example: OP_CHECKMULTISIG
+transaction: https://blockchain.info/tx/26bde88051cbe283b68c5130f4e14c86e750e7eba79c3405ec7afb09bb924b95
+
+1: OP_2DUP OP_ADD 8 OP_EQUALVERIFY OP_SUB 2 OP_EQUAL
+example: OP_2DUP OP_ADD 8 OP_EQUALVERIFY OP_SUB 2 OP_EQUAL
+transaction: https://blockchain.info/tx/ab149362ea4e119d2bc5211b35083c23ec41842af6bbc2ff3c5f1e55941199cc
+
+1: 2 2
+example: 2 2
+transaction: https://blockchain.info/tx/e568b57e5cf53bd7c3e00d16528497716d4b3909d3cd8da162010650f1900d03
+
+4: OP_RETURN 1
+example: OP_RETURN 1
+transaction: https://blockchain.info/tx/c199da58aaf6ea9446ed4d3480292ba0c3750d44943c6aa059a4b65f13f53ba4
+
+1: OP_RETURN OP_RESERVED
+example: OP_RETURN OP_RESERVED
+transaction: https://blockchain.info/tx/4e571396f7e91171deaf2828a73f5421b296e9923d737c6701dd9f0935154e03
+
+11: OP_RETURN 2 3 0
+example: OP_RETURN 2 3 0
+transaction: https://blockchain.info/tx/8191bcc40a94cc75e5c167278dbe50bd07b8aac7c38df621eb1571c6a32ded1c
+
+1538: OP_RETURN 2
+example: OP_RETURN 2
+transaction: https://blockchain.info/tx/2fbec17a23c08d1ac774c50d6ac3b696f6b42798ae5e0c3c7eb35b60f1441e32
+
+760: OP_RETURN 3
+example: OP_RETURN 3
+transaction: https://blockchain.info/tx/4ee8be15caa6996ddcd2614070352a665d26829a77f91de05f952db4a8bd1d06
+
+1898: OP_RETURN 5
+example: OP_RETURN 5
+transaction: https://blockchain.info/tx/c9cbc852bbbc2849699945ebc81d4a35fee9b6d70d5d170eb8de2101bf6eed93
+
+215: OP_RETURN 4
+example: OP_RETURN 4
+transaction: https://blockchain.info/tx/a1cd9cdb18d35921dede2201f576c8aa5e8f769f2db305a313d50aab07b4ad77
+
+621: OP_RETURN a
+example: OP_RETURN a
+transaction: https://blockchain.info/tx/fec92469723ff835995016fb518c0bc4b1adb963879bda6b33be0a0719780835
+
+2631: OP_RETURN 9
+example: OP_RETURN 9
+transaction: https://blockchain.info/tx/d3a944ae4ed70c2ebbdf0d91b49e134f4e846d272024021100b30c790d767838
+
+44: OP_RETURN OP_RESERVED 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+example: OP_RETURN OP_RESERVED 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+transaction: https://blockchain.info/tx/e8e1d98a12cf958c4ec37b643d5dda9146c8b67bef091c5c8292bf1899bbb7e7
+
+1: OP_RETURN OP_RETURN
+example: OP_RETURN OP_RETURN
+transaction: https://blockchain.info/tx/0d2c5af9709f81da1d60f3c2a16e6346a7c109f9132b019e54553e966b6fd467
+
+1: OP_RETURN OP_CHECKMULTISIG
+example: OP_RETURN OP_CHECKMULTISIG
+transaction: https://blockchain.info/tx/6ca0e5c777b67927ef1ab958bcc2b80adcc14dbe6b3a77988c98366bda5391b0
+
+304: OP_RETURN 0
+example: OP_RETURN 0
+transaction: https://blockchain.info/tx/74c2d95fd71a39bc52d47451264636bb1ebda816e7119ebacf58ddf05e3451f0
+
+1: 3 OP_DROP OP_DROP 1
+example: 3 OP_DROP OP_DROP 1
+transaction: https://blockchain.info/tx/c0b69d1e5ed13732dbd704604f7c08bc96549cc556c464aa42cc7525b3897987
+
+4: OP_MIN 3 OP_EQUAL
+example: OP_MIN 3 OP_EQUAL
+transaction: https://blockchain.info/tx/9b43e37566a6cbcd305170f33b0dc60b75486615d57c4e348f70e194124e27e2
+
+182: OP_IFDUP OP_IF OP_2SWAP OP_VERIFY OP_2OVER OP_DEPTH
+example: OP_IFDUP OP_IF OP_2SWAP OP_VERIFY OP_2OVER OP_DEPTH
+transaction: https://blockchain.info/tx/fa735229f650a8a12bcf2f14cca5a8593513f0aabc52f8687ee148c9f9ab6665
+
+2: OP_DUP OP_DUP OP_DUP
+example: OP_DUP OP_DUP OP_DUP
+transaction: https://blockchain.info/tx/b38bb421d9a54c58ea331c4b4823dd498f1e42e25ac96d3db643308fcc70503e
+
+23: OP_DUP OP_HASH160 0 OP_EQUALVERIFY OP_CHECKSIG
+example: OP_DUP OP_HASH160 0 OP_EQUALVERIFY OP_CHECKSIG
+transaction: https://blockchain.info/tx/6d5088c138e2fbf4ea7a8c2cb1b57a76c4b0a5fab5f4c188696aad807a5ba6d8
+
+2: OP_DUP
+example: OP_DUP
+transaction: https://blockchain.info/tx/37d4cc9f8a3b62e7f2e7c97c07a3282bfa924739c0e174733ff1b764ef8e3ebc
+
+8: 0
+example: 0
+transaction: https://blockchain.info/tx/ebc9fa1196a59e192352d76c0f6e73167046b9d37b8302b6bb6968dfd279b767
+
+1: OP_UNKNOWN(0xff)
+example: OP_UNKNOWN(0xff)
+transaction: https://blockchain.info/tx/8a68c461a2473653fe0add786f0ca6ebb99b257286166dfb00707be24716af3a
+
+1: OP_SIZE
+example: OP_SIZE
+transaction: https://blockchain.info/tx/10031ea0997a461d4e09157c6f9d15ff09e61f73aebd9e7f821e4c77c8251afe
+
+1: OP_CHECKSIG
+example: OP_CHECKSIG
+transaction: https://blockchain.info/tx/79d9c0c5ef02aee4f638c570d5cc8b67655912c91eb0d8ec17556ff47e6226b7
+
+1: OP_DEPTH OP_HASH256 OP_HASH160 OP_SHA256 OP_SHA1 OP_RIPEMD160 OP_EQUAL
+example: OP_DEPTH OP_HASH256 OP_HASH160 OP_SHA256 OP_SHA1 OP_RIPEMD160 OP_EQUAL
+transaction: https://blockchain.info/tx/f2d72a7bf22e29e3f2dc721afbf0a922860f81db9fc7eb397937f9d7e87cc438
+
+1: OP_IF 1 OP_ELSE 1 OP_ELSE OP_RETURN OP_ENDIF
+example: OP_IF 1 OP_ELSE 1 OP_ELSE OP_RETURN OP_ENDIF
+transaction: https://blockchain.info/tx/928ed84cd4c48beb0d3494ccc17cc1e06b1473f9dc118db9bb56972395ede461
+
+1: OP_SIZE OP_DUP 1 OP_GREATERTHAN OP_VERIFY OP_NEGATE OP_HASH256 OP_HASH160 OP_SHA256 OP_SHA1 OP_RIPEMD160 OP_EQUAL
+example: OP_SIZE OP_DUP 1 OP_GREATERTHAN OP_VERIFY OP_NEGATE OP_HASH256 OP_HASH160 OP_SHA256 OP_SHA1 OP_RIPEMD160 OP_EQUAL
+transaction: https://blockchain.info/tx/5342c96b946ea2c5e497de5dbf7762021f94aba2c8222c17ed28492fdbb4a6d9
+
+2: 1
+example: 1
+transaction: https://blockchain.info/tx/cdb553214a51ef8d4393b96a185ebbbc2c84b7014e9497fea8aec1ff990dae35

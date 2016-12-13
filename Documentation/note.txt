@@ -2,6 +2,10 @@
 
 blockchain.png: http://2.bp.blogspot.com/-DaJcdsyqQSs/UsiTXNHP-0I/AAAAAAAATC0/kiFRowh-J18/s1600/blockchain.png
 
+patterns.txt file ran on entire block chain up to ~443000 block height
+
+
+https://en.bitcoin.it/wiki/OP_RETURN
 
 
 important:
@@ -51,3 +55,69 @@ https://www.anintegratedworld.com/unravelling-the-mysterious-block-chain-magic-n
             //testnet3    0x0709110B
             //namecoin    0xFEB4BEF9
 there are 4 bitcoin blockchain to consider
+
+
+
+
+
+
+Pay To Public Key Hash (P2PKH)
+P2PKH is the most common form of pubkey script used to send a transaction to one or multiple Bitcoin addresses.
+Pubkey script: OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+Signature script: <sig> <pubkey>
+
+
+Pay To Script Hash (P2SH)
+P2SH is used to send a transaction to a script hash. Each of the standard pubkey scripts can be used as a P2SH redeem script, but in practice only the multisig pubkey script makes sense until more transaction types are made standard.
+Pubkey script: OP_HASH160 <Hash160(redeemScript)> OP_EQUAL
+Signature script: <sig> [sig] [sig...] <redeemScript>
+
+
+Multisig
+Although P2SH multisig is now generally used for multisig transactions, this base script can be used to require multiple signatures before a UTXO can be spent.
+In multisig pubkey scripts, called m-of-n, m is the minimum number of signatures which must match a public key; n is the number of public keys being provided. Both m and n should be opcodes OP_1 through OP_16, corresponding to the number desired.
+Because of an off-by-one error in the original Bitcoin implementation which must be preserved for compatibility, OP_CHECKMULTISIG consumes one more value from the stack than indicated by m, so the list of secp256k1 signatures in the signature script must be prefaced with an extra value (OP_0) which will be consumed but not used.
+The signature script must provide signatures in the same order as the corresponding public keys appear in the pubkey script or redeem script. See the description in OP_CHECKMULTISIG for details.
+Pubkey script: <m> <A pubkey> [B pubkey] [C pubkey...] <n> OP_CHECKMULTISIG
+Signature script: OP_0 <A sig> [B sig] [C sig...]
+
+
+Pubkey
+Pubkey outputs are a simplified form of the P2PKH pubkey script, but they aren’t as secure as P2PKH, so they generally aren’t used in new transactions anymore.
+Pubkey script: <pubkey> OP_CHECKSIG
+Signature script: <sig>
+
+
+Null Data
+Null data transaction type relayed and mined by default in Bitcoin Core 0.9.0 and later that adds arbitrary data to a provably unspendable pubkey script that full nodes don’t have to store in their UTXO database. It is preferable to use null data transactions over transactions that bloat the UTXO database because they cannot be automatically pruned; however, it is usually even more preferable to store data outside transactions if possible.
+Consensus rules allow null data outputs up to the maximum allowed pubkey script size of 10,000 bytes provided they follow all other consensus rules, such as not having any data pushes larger than 520 bytes.
+Bitcoin Core 0.9.x to 0.10.x will, by default, relay and mine null data transactions with up to 40 bytes in a single data push and only one null data output that pays exactly 0 satoshis:
+Bitcoin Core 0.11.x increases this default to 80 bytes, with the other rules remaining the same.
+Bitcoin Core 0.12.0 defaults to relaying and mining null data outputs with up to 83 bytes with any number of data pushes, provided the total byte limit is not exceeded. There must still only be a single null data output and it must still pay exactly 0 satoshis.
+Pubkey Script: OP_RETURN <0 to 40 bytes of data>
+(Null data scripts cannot be spent, so there's no signature script.)
+
+
+
+
+
+https://www.youtube.com/watch?v=MaB3Zw5_p9c&feature=youtu.be&t=7m06s
+
+
+d3c1cbcce82f3bde0537f82a55f3b8458cb50d632977f85c81dad3e1983a3348638f5c
+http://blockchain.info/tx/e44542844e111d89a5d486ef124d16e80fc127136cfb9d674f09ec7f522abda9
+1CxCtqirDnQHojm7e8suU4sLKgqTejh4qW
+cce82f3bde0537f82a55f3b8458cb50d632977f85c81dad3e1983a3348638f5c
+d3c1cb2cdbf07c25e3c5f513de5ee36081a7c590e621f1f1eab62e8d4b50b635
+7379ab5047b143c0b6cfe5d8d79ad240b4b4f8cced55aa26f86d1d3d370c0d4c
+
+
+
+
+
+10/18 blockchain dump !!!
+10/25 too apparently
+warning: i havent clicked on this link
+
+https://beamstat.com/chan/wikileaks/0ae259a1ee06049580afcc2300b38f6fe6ab1f118bbc326c311943e2a2b7f9e1
+

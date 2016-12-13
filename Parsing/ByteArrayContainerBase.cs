@@ -30,7 +30,7 @@ namespace BlockChain
         }
 
         public override string ToString() {
-            return string.Join(string.Empty, Helper.Hex(this.Raw));
+            return string.Join(string.Empty, Helper.HexEncode(this.Raw));
         }
 
 

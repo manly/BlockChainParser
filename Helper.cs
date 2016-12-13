@@ -10,13 +10,28 @@ namespace BlockChain
 {
 
     public static class Helper {
-        // byte -> hex, to massively speed up byte.ToString("x2")
-        private static readonly string[] m_hexValues;
+        private static readonly string[] m_hexEncodeValues; // byte -> hex, to massively speed up byte.ToString("x2")
+        private static readonly byte[] m_hexDecodeValues;   // char -> 4 bits
+        private static readonly bool[] m_validTextCharacters;
 
         static Helper() {
-            m_hexValues = new string[256];
+            m_hexEncodeValues = new string[256];
             for(int i = 0; i < 256; i++)
-                m_hexValues[i] = i.ToString("x2", CultureInfo.InvariantCulture);
+                m_hexEncodeValues[i] = i.ToString("x2", CultureInfo.InvariantCulture);
+            m_hexDecodeValues = new byte[65536];
+            int value = 0;
+            foreach(var item in "0123456789abcdef")
+                m_hexDecodeValues[item] = (byte)value++;
+            value = 10;
+            foreach(var item in "ABCDEF")
+                m_hexDecodeValues[item] = (byte)value++;
+            m_validTextCharacters = new bool[65536];
+            foreach(var item in "\r\n\t")
+                m_validTextCharacters[item] = true;
+            for(int i = 32; i < 127; i++)
+                m_validTextCharacters[i] = true;
+            for(int i = 128; i < 169; i++)
+                m_validTextCharacters[i] = true;
         }
 
         public static Hash SHA256(byte[] buffer, int offset, int count) {
@@ -80,18 +95,18 @@ namespace BlockChain
                 buffer[index++] = (byte)value;
             else if(value <= 0xFFFF) {
                 buffer[index++] = (byte)0xFD;
-                buffer[index++] = (byte)((value >> 0) & 0xFF);
-                buffer[index++] = (byte)((value >> 8) & 0xFF);
+                buffer[index++] = (byte)((value >> 0)  & 0xFF);
+                buffer[index++] = (byte)((value >> 8)  & 0xFF);
             } else if(value <= 0xFFFFFFFF) {
                 buffer[index++] = (byte)0xFE;
-                buffer[index++] = (byte)((value >> 0) & 0xFF);
-                buffer[index++] = (byte)((value >> 8) & 0xFF);
+                buffer[index++] = (byte)((value >> 0)  & 0xFF);
+                buffer[index++] = (byte)((value >> 8)  & 0xFF);
                 buffer[index++] = (byte)((value >> 16) & 0xFF);
                 buffer[index++] = (byte)((value >> 24) & 0xFF);
             } else {
                 buffer[index++] = (byte)0xFF;
-                buffer[index++] = (byte)((value >> 0) & 0xFF);
-                buffer[index++] = (byte)((value >> 8) & 0xFF);
+                buffer[index++] = (byte)((value >> 0)  & 0xFF);
+                buffer[index++] = (byte)((value >> 8)  & 0xFF);
                 buffer[index++] = (byte)((value >> 16) & 0xFF);
                 buffer[index++] = (byte)((value >> 24) & 0xFF);
                 buffer[index++] = (byte)((value >> 32) & 0xFF);
@@ -101,17 +116,90 @@ namespace BlockChain
             }
         }
 
-        public static string Hex(byte[] value) {
+        public static string HexEncode(byte[] value) {
             //return string.Join(string.Empty, value.Select(o => o.ToString("x2", CultureInfo.InvariantCulture)));
             var sb = new StringBuilder(value.Length << 1);
             for(int i = 0; i < value.Length; i++)
-                sb.Append(m_hexValues[value[i]]);
+                sb.Append(m_hexEncodeValues[value[i]]);
             return sb.ToString();
         }
+        public static byte[] HexDecode(string value) {
+            if(value.Length == 0)
+                return new byte[0];
+            // we shouldnt have an odd number of characters, but if we do, the only
+            // sensible way to interpret the data is that the extra 4 bits have to be the least significant bits
+            // as such they only make sense at the beginning of the string
+            var is_even = (value.Length & 0x01) == 0;
+            var res = new byte[(value.Length >> 1) + (is_even ? 0 : 1)];
+            int index = 0;
+            if(!is_even)
+                res[index++] = m_hexDecodeValues[value[0]];
+            for(int i = (is_even ? 0 : 1); i < value.Length; i += 2) {
+                res[index++] = (byte)
+                    ((m_hexDecodeValues[value[i + 0]] << 4) |
+                     (m_hexDecodeValues[value[i + 1]] << 0));
+            }
+            return res;
+        }
+        public static string HexDecode(string value, Encoding encoding) {
+            return encoding.GetString(HexDecode(value));
+        }
 
-        private static Regex m_scriptPattern = new Regex(@"\b[0-9a-fA-F]+\b", RegexOptions.Compiled);
+        private static Regex m_scriptPattern = new Regex(@"\b[0-9a-fA-F]{2,}\b", RegexOptions.Compiled);
         public static string DetectScriptPattern(string script) {
             return m_scriptPattern.Replace(script, m => $"[hex size={m.Length.ToString(CultureInfo.InvariantCulture)}]").Trim();
         }
+        public static string ExtractScriptChunks(string script) {
+            var sb = new StringBuilder(script.Length);
+            foreach(Match m in m_scriptPattern.Matches(script))
+                sb.Append(m.Value);
+            return sb.ToString();
+        }
+
+        #region public static ExtractText()
+        public static string ExtractText(byte[] buffer) {
+            if(buffer == null)
+                return null;
+            var value = Encoding.UTF8.GetString(buffer);
+            // fast trim()
+            int start = 0;
+            while(start < value.Length) {
+                if(m_validTextCharacters[value[start]])
+                    break;
+                else
+                    start++;
+            }
+            int end = value.Length - 1;
+            while(end >= start) {
+                if(m_validTextCharacters[value[end]])
+                    break;
+                else
+                    end--;
+            }
+            var length = end - start + 1;
+            if(length == 0)
+                return null;
+            if(length <= 5) {
+                if(start > 3 || end != buffer.Length - 1)
+                    return null;
+                for(int i = start + 1; i < end - 1; i++) {
+                    if(!m_validTextCharacters[value[i]])
+                        return null;
+                }
+                return value.Substring(start, length);
+            }
+
+            int invalid_character_count = 0;
+            var sb = new StringBuilder(value, start, length, length);
+            for(int i = 1; i < length; i++) {
+                if(!m_validTextCharacters[sb[i]]) {
+                    if(++invalid_character_count > 2)
+                        return null;
+                    sb[i] = '?';
+                }
+            }
+            return sb.ToString();
+        }
+        #endregion
     }
 }
