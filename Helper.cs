@@ -190,7 +190,7 @@ namespace BlockChain
 
         private static Regex m_unlikelyTextPatternRegex = new Regex("[a-z][A-Z]|[0-9][a-zA-Z]|[^a-zA-Z0-9]@|@[^a-zA-Z0-9]", RegexOptions.Compiled);
         private static bool FilterUnlikelyTextPatterns(string value, int index, int length) {
-            const int MIN_ALPHA_CHARACTERS = 5;
+            int[] MIN_ALPHANUM_CHARACTERS_NEEDED_PER_LENGTH = new[] { 1, 2, 3, 4, 5, 5, 6, 6 };
 
             // more complex sanity checks on small chunks
             if(length <= 8) {
@@ -200,7 +200,7 @@ namespace BlockChain
                     if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
                         count++;
                 }
-                if(count < MIN_ALPHA_CHARACTERS)
+                if(count < MIN_ALPHANUM_CHARACTERS_NEEDED_PER_LENGTH[length - 1])
                     return false;
 
                 var m = m_unlikelyTextPatternRegex.Match(value, index, length);
