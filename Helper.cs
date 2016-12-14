@@ -158,48 +158,56 @@ namespace BlockChain
 
         #region public static ExtractText()
         public static string ExtractText(byte[] buffer) {
-            if(buffer == null)
+            const int MIN_TEXT_SIZE = 4;
+            const string CHUNK_SEPARATOR = " / ";
+
+            if(buffer == null || buffer.Length < MIN_TEXT_SIZE)
                 return null;
             var value = Encoding.UTF8.GetString(buffer);
-            // fast trim()
-            int start = 0;
-            while(start < value.Length) {
-                if(m_validTextCharacters[value[start]])
-                    break;
-                else
-                    start++;
-            }
-            int end = value.Length - 1;
-            while(end >= start) {
-                if(m_validTextCharacters[value[end]])
-                    break;
-                else
-                    end--;
-            }
-            var length = end - start + 1;
-            if(length == 0)
-                return null;
-            if(length <= 5) {
-                if(start > 3 || end != buffer.Length - 1)
-                    return null;
-                for(int i = start + 1; i < end - 1; i++) {
-                    if(!m_validTextCharacters[value[i]])
-                        return null;
-                }
-                return value.Substring(start, length);
-            }
 
-            int invalid_character_count = 0;
-            var sb = new StringBuilder(value, start, length, length);
-            for(int i = 1; i < length; i++) {
-                if(!m_validTextCharacters[sb[i]]) {
-                    if(++invalid_character_count > 2)
-                        return null;
-                    sb[i] = '?';
+            int chunk_start = 0;
+            var sb = new StringBuilder(value.Length);
+            for(int i = 0; i < value.Length; i++) {
+                var valid_character = m_validTextCharacters[value[i]];
+                if(!valid_character || i == value.Length - 1) {
+                    var length = i - chunk_start + (!valid_character ? 0 : 1);
+                    if(length >= MIN_TEXT_SIZE) {
+                        var valid = FilterUnlikelyTextPatterns(value, chunk_start, length);
+
+                        if(valid) {
+                            if(sb.Length > 0)
+                                sb.Append(CHUNK_SEPARATOR);
+                            sb.Append(value, chunk_start, length);
+                        }
+                    }
+                    chunk_start = i + 1;
                 }
             }
-            return sb.ToString();
+            
+            return sb.Length == 0 ? null : sb.ToString();
         }
         #endregion
+
+        private static Regex m_unlikelyTextPatternRegex = new Regex("[a-z][A-Z]|[0-9][a-zA-Z]|[^a-zA-Z0-9]@|@[^a-zA-Z0-9]", RegexOptions.Compiled);
+        private static bool FilterUnlikelyTextPatterns(string value, int index, int length) {
+            const int MIN_ALPHA_CHARACTERS = 5;
+
+            // more complex sanity checks on small chunks
+            if(length <= 8) {
+                int count = 0;
+                for(int i = 0; i < length; i++) {
+                    var c = value[index + i];
+                    if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+                        count++;
+                }
+                if(count < MIN_ALPHA_CHARACTERS)
+                    return false;
+
+                var m = m_unlikelyTextPatternRegex.Match(value, index, length);
+                return m == null || !m.Success;
+            }
+
+            return true;
+        }
     }
 }

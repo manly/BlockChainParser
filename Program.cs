@@ -203,7 +203,7 @@ namespace BlockChain {
                                     var text = Helper.ExtractText(txin.Script.Raw);
                                     if(text == null)
                                         continue;
-                                    sb_out.AppendFormat("block ~{0} ({1:yyyy-MM-dd HH:mm:ss}) - https://blockchain.info/tx/{2} - {3}", block.Height, block.Timestamp, transaction.TransactionHash, text);
+                                    sb_in.AppendFormat("block ~{0} ({1:yyyy-MM-dd HH:mm:ss}) - https://blockchain.info/tx/{2} - {3}", block.Height, block.Timestamp, transaction.TransactionHash, text);
                                     sb_in.AppendLine();
                                 }
 
@@ -215,8 +215,7 @@ namespace BlockChain {
 
                                     // read the raw binary, convert to text
                                     var text = Helper.ExtractText(txout.Script.Raw);
-                                    if(text != null && text.Length > 3) {
-                                        text = text.Substring(3);
+                                    if(text != null) {
                                         // they always begin with 'v??' here, so remove that
                                         sb_out.AppendFormat("block ~{0} ({1:yyyy-MM-dd HH:mm:ss}) - https://blockchain.info/tx/{2} - {3}", block.Height, block.Timestamp, transaction.TransactionHash, text);
                                         sb_out.AppendLine();
